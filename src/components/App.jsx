@@ -16,16 +16,18 @@ export class App extends Component {
   };
 
   formSubmitHandler = ({ name, number }) => {
-    this.setState(({ contacts }) => ({
-      contacts: [
-        {
-          id: uuidv4(),
-          name,
-          number,
-        },
-        ...contacts,
-      ],
-    }));
+    this.onCheckUniqueName(name)
+      ? alert(`${name} is alredy in contacts.`)
+      : this.setState(({ contacts }) => ({
+          contacts: [
+            {
+              id: uuidv4(),
+              name,
+              number,
+            },
+            ...contacts,
+          ],
+        }));
   };
 
   filterUpdateHandler = data => {
@@ -34,22 +36,41 @@ export class App extends Component {
     });
   };
 
-  render() {
+  onCheckUniqueName = value => {
+    const { contacts } = this.state;
+
+    return contacts.find(({ name }) => name === value);
+  };
+
+  filteredContactsHandler = () => {
     const { contacts, filter } = this.state;
-    const filteredContacts = contacts.filter(({ name }) =>
+
+    return contacts.filter(({ name }) =>
       name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()),
     );
+  };
+
+  onDeleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
+  };
+
+  render() {
+    const { contacts, filter } = this.state;
+
     return (
-      <>
+      <div>
+        <h1>Phonebook</h1>
         <ContactForm onSubmit={this.formSubmitHandler} />
         <h2>Contacts</h2>
         <Filter onGetValue={this.filterUpdateHandler} />
         {!filter ? (
-          <ContactList contacts={contacts} />
+          <ContactList contacts={contacts} onDelete={this.onDeleteContact} />
         ) : (
-          <ContactList contacts={filteredContacts} />
+          <ContactList contacts={this.filteredContactsHandler()} onDelete={this.onDeleteContact} />
         )}
-      </>
+      </div>
     );
   }
 }
