@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { ContactForm } from 'components/ContactForm/ContactForm';
 import { ContactList } from 'components/ContactList/ContactList';
 import { Filter } from 'components/Filter/Filter';
+import { Container, AppTitle } from './App.styled';
 
 export class App extends Component {
   state = {
@@ -42,7 +43,7 @@ export class App extends Component {
     return contacts.find(({ name }) => name === value);
   };
 
-  filteredContactsHandler = () => {
+  filterContactsHandler = () => {
     const { contacts, filter } = this.state;
 
     return contacts.filter(({ name }) =>
@@ -60,17 +61,20 @@ export class App extends Component {
     const { contacts, filter } = this.state;
 
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <Container>
+        <AppTitle>Phonebook</AppTitle>
         <ContactForm onSubmit={this.formSubmitHandler} />
-        <h2>Contacts</h2>
         <Filter onGetValue={this.filterUpdateHandler} />
         {!filter ? (
-          <ContactList contacts={contacts} onDelete={this.onDeleteContact} />
+          <ContactList title="Contacts" contacts={contacts} onDelete={this.onDeleteContact} />
         ) : (
-          <ContactList contacts={this.filteredContactsHandler()} onDelete={this.onDeleteContact} />
+          <ContactList
+            title="Searched contacts"
+            contacts={this.filterContactsHandler()}
+            onDelete={this.onDeleteContact}
+          />
         )}
-      </div>
+      </Container>
     );
   }
 }

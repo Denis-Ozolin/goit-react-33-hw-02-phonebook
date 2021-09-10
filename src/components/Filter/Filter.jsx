@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { InputContainer } from './Filter.styled';
 
 export class Filter extends Component {
   state = {
@@ -16,10 +17,12 @@ export class Filter extends Component {
   render() {
     const { value } = this.state;
     return (
-      <label>
-        Find contacts by name
-        <input onChange={this.handleChange} value={value} type="text" />
-      </label>
+      <InputContainer>
+        <label>
+          Find contacts by name
+          <input onChange={this.handleChange} value={value} type="text" />
+        </label>
+      </InputContainer>
     );
   }
 }
